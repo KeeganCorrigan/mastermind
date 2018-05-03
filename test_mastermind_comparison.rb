@@ -1,8 +1,8 @@
 require "pry"
 # require './filename' the . represents root directory
 
-computer_guess = ["b", "b", "g", "y"]
-player_guess = ["y", "g", "r", "r"]
+computer_guess = ["y", "b", "b", "y"]
+player_guess = ["r", "y", "y", "b"]
 
 # arr_1.each do |x|
 #   first_array_position.at
@@ -18,14 +18,23 @@ player_guess = ["y", "g", "r", "r"]
 correct_guesses_and_positions =
 
 computer_guess.each_with_index do |color, i|
-  color = player_guess[i]
+  binding.pry
+  other_array << color == player_guess[i].count(true)
 end
 
-  binding.pry
+# computer_guess.each_with_index do |color, i|
+#   element_counter = 0
+#   if color == player_guess[i]
+#     element_counter += 1
+#   end
+#   p element_counter
+# end
 
-number_of_like_colors = computer_guess.map { |n| player_guess.uniq.include?(n) }.count(true)
+p element_counter
 
-p number_of_like_colors
+number_of_like_elements = computer_guess.map { |n| player_guess.uniq.include?(n) }.count(true)
+
+p number_of_like_elements
 
 
 
