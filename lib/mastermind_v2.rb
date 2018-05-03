@@ -2,6 +2,7 @@ require "pry"
 require "./lib/text"
 
 class Mastermind
+  attr_reader
   def initialize
     text = Text.new
     @computer_color_selection = []
@@ -24,21 +25,19 @@ class Mastermind
     @initial_player_input = gets.chomp.downcase
   end
 
-  # def player_path_decider
-  #   until @initial_player_input == "p"
-  #     if @initial_player_input == "c"
-  #       cheat_code
-  #       get_player_initial_input
-  #     elsif @initial_player_input == "i"
-  #       display_instructions
-  #       get_player_initial_input
-  #     elsif @initial_player_input == "q"
-  #       quit_game
-  #       break
-# =>    end
-# =>  get_player_initial_input
-  #   end
-  # end
+  def player_path_decider
+    until @initial_player_input == "p"
+      if @initial_player_input == "c"
+        cheat_code
+      elsif @initial_player_input == "i"
+        p game_play_instructions
+      elsif @initial_player_input == "q"
+        quit_game
+      end
+    get_player_initial_input
+    end
+  end
+
 
   def cheat_code
     @initial_player_input == "c"
@@ -47,20 +46,17 @@ class Mastermind
 
   def quit_game
     puts "So... this is how it ends."
+    exit
   end
 
   def game_play_instructions
-    "I have generated a beginner sequence with four elements made up of: (r)ed, (g)reen, (b)lue, and (y)ellow. Use (q)uit at any time to end the game."
+    puts "I have generated a beginner sequence with four elements made up of: (r)ed, (g)reen, (b)lue, and (y)ellow. Use (q)uit at any time to end the game."
   end
-
-  # def initiate_game_play
-  #   puts game_play_instructions
-  #   get_player_guess
-  #   test_player_guess
-  # end
 
   def get_player_guess
     player_color_guess = gets.downcase.chomp
+    exit if player_color_guess == "q"
+    p @computer_color_selection  if player_color_guess == "c"
     @player_colors_guess_array = player_color_guess.split("")
   end
 
@@ -80,13 +76,13 @@ class Mastermind
       if color == @player_colors_guess_array[i]
         @element_counter += 1
       end
-      binding.pry
     end
 
     def guess_counter
       if @player_colors_guess_array != @copmuter_color_selection
         @guess_counter += 1
       end
+      binding.pry
     end
 
     def win_state
@@ -106,16 +102,20 @@ text = Text.new
 
 mastermind.computer_random_generator
 p text.intro
+mastermind.player_path_decider
+
 # mastermind.get_player_initial_input
+
+# if mastermind.check_number_of_exact_elements == 4
+# break
 loop do
-  # if mastermind.check_number_of_exact_elements == 4
-  # break
+  mastermind.game_play_instructions
   mastermind.get_player_guess
   mastermind.check_player_guess_for_validity
   mastermind.check_number_of_exact_elements
-  mastermind.check_number_of_like_elements
+  # mastermind.check_number_of_like_elements
   mastermind.guess_counter
-  binding.pry
+  # if mastermind.win_state
   # mastermind.check_number_of_exact_elements
-end
+  end
 end
