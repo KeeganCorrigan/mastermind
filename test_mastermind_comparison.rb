@@ -1,8 +1,37 @@
 require "pry"
 # require './filename' the . represents root directory
 
-computer_guess = ["y", "b", "b", "y"]
+computer_guess = ["b", "y", "r", "b"]
 player_guess = ["r", "y", "y", "b"]
+
+# number_of_like_elements = computer_guess.map { |n| player_guess.uniq.include?(n) }.count(true)
+#
+# p number_of_like_elements
+unique_elements = 0
+
+computer_guess.uniq.each do |color|
+  if player_guess.uniq.include?(color)
+    unique_elements += 1
+  end
+  p unique_elements
+end
+
+# computer_guess.each do |name|
+#   unique_elements = 0
+#   name
+#   binding.pry
+#   if player_guess.uniq == name
+#     unique_elements += 1
+#   end
+#   p unique_elements
+# end
+
+#
+# end
+#
+# p number_of_like_elements
+#
+# p number_of_like_elements.count(true)
 
 # arr_1.each do |x|
 #   first_array_position.at
@@ -15,12 +44,12 @@ player_guess = ["r", "y", "y", "b"]
 
 # player_color_count_hash = Hash.new 0
 
-correct_guesses_and_positions =
+# correct_guesses_and_positions =
 
-computer_guess.each_with_index do |color, i|
-  binding.pry
-  other_array << color == player_guess[i].count(true)
-end
+# computer_guess.each_with_index do |color, i|
+#   binding.pry
+#   color == player_guess[i]
+# end
 
 # computer_guess.each_with_index do |color, i|
 #   element_counter = 0
@@ -29,12 +58,10 @@ end
 #   end
 #   p element_counter
 # end
+#
+# p element_counter
 
-p element_counter
 
-number_of_like_elements = computer_guess.map { |n| player_guess.uniq.include?(n) }.count(true)
-
-p number_of_like_elements
 
 
 
