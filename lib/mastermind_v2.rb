@@ -6,21 +6,19 @@ class Mastermind
     text = Text.new
     @computer_color_selection = []
     @initial_player_input = ""
-    @player_colors_guess_array = []
+    @player_colors_guess = []
     @correct_guesses_and_positions = []
     @number_of_like_elements = []
     @guess_counter = 0
   end
 
   def computer_random_generator
-    color_options = ["r", "g", "b", "y"]
-    4.times do
-      @computer_color_selection << color_options.sample
+    if @computer_color_selection == []
+      color_options = ["r", "g", "b", "y"]
+      4.times do
+        @computer_color_selection << color_options.sample
+      end
     end
-  end
-
-  def get_player_initial_input
-    @initial_player_input = gets.chomp.downcase
   end
 
   def player_path_decider
@@ -34,9 +32,8 @@ class Mastermind
     end
   end
 
-  def cheat_code
-    @initial_player_input == "c"
-    puts @computer_color_selection
+  def get_player_initial_input
+    @initial_player_input = gets.chomp.downcase
   end
 
   def instructions
@@ -48,17 +45,22 @@ class Mastermind
   end
 
   def get_player_guess
+    player_color_guess = ""
+    game_play_instructions
     player_color_guess = gets.downcase.chomp
     exit if player_color_guess == "q"
-    puts @computer_color_selection if player_color_guess == "c"
-    @player_colors_guess_array = player_color_guess.split("")
+    if player_color_guess == "c"
+      p @computer_color_selection.join
+      # get_player_guess
+    end
+    @player_colors_guess = player_color_guess.split("")
   end
 
   def check_player_guess_for_validity
-    until @player_colors_guess_array.length == @computer_color_selection.length
-      if @player_colors_guess_array.length > @computer_color_selection.length
+    until @player_colors_guess.length == @computer_color_selection.length || @player_color_guess == "c"
+      if @player_colors_guess.length > @computer_color_selection.length && @player_colors_guess =! "c"
         puts "Too many colors!"
-      elsif @player_colors_guess_array.length < @computer_color_selection.length
+      elsif @player_colors_guess.length < @computer_color_selection.length && @player_colors_guess =! "c"
         puts "Not enough colors!"
       end
       get_player_guess
@@ -68,7 +70,7 @@ class Mastermind
   def check_number_of_exact_elements
     exact_element_counter = 0
     @computer_color_selection.each_with_index do |color, i|
-      if color == @player_colors_guess_array[i]
+      if color == @player_colors_guess[i]
         exact_element_counter += 1
       end
     end
@@ -77,10 +79,11 @@ class Mastermind
 
   def check_number_of_like_elements
     unique_element_counter = 0
-    @player_colors_guess_array.each do |color|
-      if @computer_color_selection.include?(color)
-        delete_color = copmuter_guess.index(v)
-        computer_guess.delete_at(delete)
+    cloned_computer_color_selection = @computer_color_selection.clone
+    @player_colors_guess.each do |color|
+      if cloned_computer_color_selection.include?(color)
+        delete_color = cloned_computer_color_selection.index(color)
+        cloned_computer_color_selection.delete_at(delete_color)
         unique_element_counter += 1
       end
     end
@@ -88,23 +91,46 @@ class Mastermind
   end
 
   def guess_counter
-    if @player_colors_guess_array != @computer_color_selection
+    if @player_colors_guess != @computer_color_selection
       @guess_counter += 1
     end
     @guess_counter
   end
 
   def incorrect_guess_statement
-    puts "#{@player_colors_guess_array.join("")} has #{check_number_of_like_elements} of the correct elements with #{check_number_of_exact_elements} in the correct positions. Number of guesses: #{@guess_counter}"
+    clear_screen
+    puts "#{@player_colors_guess.join("")} has #{check_number_of_like_elements} of the correct elements with #{check_number_of_exact_elements} in the correct positions. Number of guesses: #{@guess_counter}"
+  end
+
+  def win_state_text
+    "You guessed correctly! It only took you... uh... #{@guess_counter} guesses."
+  end
+
+  def play_again_text
+    "Do you want to (p)lay again or (q)uit?"
+  end
+
+  def clear_screen
+    puts `clear`
   end
 
   def win_state
-    if @player_colors_guess_array == @computer_color_selection
-      puts "You guessed correctly! It only took you... uh... #{@guess_counter} guesses."
-      p "Do you want to (p)lay again or (q)uit?"
-      get_player_initial_input
-      player_path_decider
+    if @player_colors_guess == @computer_color_selection
+      @guess_counter += 1
+      p win_state_text
+      @guess_counter = 0
+      p play_again_text
+      loop do
+        get_player_initial_input
+        break if @initial_player_input == "p"
+        exit if @initial_player_input == "q"
+      end
+      reset_computer_input
     end
+  end
+
+  def reset_computer_input
+    @computer_color_selection = []
   end
 end
 
@@ -113,10 +139,10 @@ text = Text.new
 
 p text.intro
 mastermind.player_path_decider
-p mastermind.game_play_instructions
-mastermind.computer_random_generator
 
 loop do
+  mastermind.computer_random_generator
+  p mastermind.game_play_instructions
   mastermind.get_player_guess
   mastermind.check_player_guess_for_validity
   mastermind.check_number_of_exact_elements
@@ -126,6 +152,4 @@ loop do
   mastermind.win_state
 end
 
-# prints that "c" is not the correct length
-# mastermind.win_state asks player if they want to play but flow control is wonky and needs to be adjusted.
 # create a reset guess counter method
