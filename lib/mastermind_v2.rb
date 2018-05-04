@@ -77,8 +77,10 @@ class Mastermind
 
   def check_number_of_like_elements
     unique_element_counter = 0
-    @computer_color_selection.uniq.each do |color|
-      if @player_colors_guess_array.uniq.include?(color)
+    @player_colors_guess_array.each do |color|
+      if @computer_color_selection.include?(color)
+        delete_color = copmuter_guess.index(v)
+        computer_guess.delete_at(delete)
         unique_element_counter += 1
       end
     end
@@ -93,10 +95,7 @@ class Mastermind
   end
 
   def incorrect_guess_statement
-    #if @player_colors_guess_array =! @computer_color_selection
-      puts "#{@player_colors_guess_array.join("")} has #{check_number_of_like_elements} of the correct elements with #{check_number_of_exact_elements} in the correct positions. Number of guesses: #{@guess_counter}"
-    # else
-    # end
+    puts "#{@player_colors_guess_array.join("")} has #{check_number_of_like_elements} of the correct elements with #{check_number_of_exact_elements} in the correct positions. Number of guesses: #{@guess_counter}"
   end
 
   def win_state
@@ -112,10 +111,10 @@ end
 mastermind = Mastermind.new
 text = Text.new
 
-mastermind.computer_random_generator
 p text.intro
 mastermind.player_path_decider
 p mastermind.game_play_instructions
+mastermind.computer_random_generator
 
 loop do
   mastermind.get_player_guess

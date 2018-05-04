@@ -1,20 +1,54 @@
 require "pry"
 # require './filename' the . represents root directory
 
-computer_guess = ["b", "y", "r", "b"]
-player_guess = ["r", "y", "y", "b"]
+player_guess = ["b", "b", "r", "b"]
+computer_guess = ["b", "y", "y", "r"]
 
-# number_of_like_elements = computer_guess.map { |n| player_guess.uniq.include?(n) }.count(true)
-#
-# p number_of_like_elements
-unique_elements = 0
+counter = 0
 
-computer_guess.uniq.each do |color|
-  if player_guess.uniq.include?(color)
-    unique_elements += 1
+player_guess.each do |v|
+  if computer_guess.include?(v)
+    delete = computer_guess.index(v)
+    computer_guess.delete_at(delete)
+    counter += 1
   end
-  p unique_elements
 end
+
+p counter
+
+
+# counts = Hash.new 0
+#
+# computer_guess.each do |word|
+#   counts[word] += 1
+# end
+#
+# p counts
+#
+# counts_2 = Hash.new 0
+#
+# player_guess.each do |word|
+#   counts_2[word] += 1
+# end
+#
+# p counts_2
+#
+# (counts_2.keys & counts_1.keys).each do |k|
+#   puts (counts_2[k] == counts_1[k] ? [k] : k)
+#   color_amount << k
+# end
+#
+# p color_amount
+# (player_color_count_hash.keys & computer_color_count_hash.keys).each do |k|
+#   puts ( player_color_count_hash[k] == computer_color_count_hash[k] ? [k] : k )
+#   color_amount << k
+# end
+
+
+#
+# computer_guess.each_with_index do |n, i|
+#   counter = 0
+#   if computer_guess
 
 # computer_guess.each do |name|
 #   unique_elements = 0
