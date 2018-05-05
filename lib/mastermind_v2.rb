@@ -3,153 +3,161 @@ require "./lib/text"
 
 class Mastermind
   def initialize
-    text = Text.new
-    @computer_color_selection = []
-    @initial_player_input = ""
-    @player_colors_guess = []
-    @correct_guesses_and_positions = []
-    @number_of_like_elements = []
+    @computer_sequence = []
+    @player_guess = []
     @guess_counter = 0
   end
 
+  def start_time
+    @time_start = Time.new.to_i
+  end
+
   def computer_random_generator
-    if @computer_color_selection == []
+    if @computer_sequence == []
       color_options = ["r", "g", "b", "y"]
+      start_time
       4.times do
-        @computer_color_selection << color_options.sample
+        @computer_sequence << color_options.sample
       end
     end
+  end
+
+  def introductory_text
+   puts "Welcome to MASTERMIND\n Would you like to (p)lay, (r)ead the instructions, or (q)uit?"
   end
 
   def player_path_decider
-    until @initial_player_input == "p"
-      if @initial_player_input == "i"
-        p instructions
-      elsif @initial_player_input == "q"
-        exit
-      end
-    get_player_initial_input
+    introductory_text
+    initial_player_input = gets.chomp.downcase
+    if initial_player_input == "p"
+      return
+    elsif initial_player_input == "r"
+      instructions
+      player_path_decider
+    elsif initial_player_input == "q"
+      exit
     end
-  end
-
-  def get_player_initial_input
-    @initial_player_input = gets.chomp.downcase
   end
 
   def instructions
-    "this is how you play the game"
+    puts "The computer will generate a random sequence of (r)ed, (g)reen, (b)lue, and (y)ellow. You will make guesses in the format: rygb. You can quit at any time by pressing (q) or typing quit!"
   end
 
   def game_play_instructions
-    "I have generated a beginner sequence with four elements made up of: (r)ed, (g)reen, (b)lue, and (y)ellow. Use (q)uit at any time to end the game."
+    puts "I have generated a beginner sequence with four elements made up of: (r)ed, (g)reen, (b)lue, and (y)ellow. Use (q)uit at any time to end the game."
   end
 
   def get_player_guess
-    player_color_guess = ""
     game_play_instructions
     player_color_guess = gets.downcase.chomp
-    exit if player_color_guess == "q"
-    if player_color_guess == "c"
-      p @computer_color_selection.join
-      # get_player_guess
-    end
-    @player_colors_guess = player_color_guess.split("")
-  end
-
-  def check_player_guess_for_validity
-    until @player_colors_guess.length == @computer_color_selection.length || @player_color_guess == "c"
-      if @player_colors_guess.length > @computer_color_selection.length && @player_colors_guess =! "c"
-        puts "Too many colors!"
-      elsif @player_colors_guess.length < @computer_color_selection.length && @player_colors_guess =! "c"
-        puts "Not enough colors!"
-      end
+    if player_color_guess == "q"
+      exit
+    elsif player_color_guess == "c"
+      puts @computer_sequence.join
       get_player_guess
+    elsif invalid_guess?(player_color_guess)
+      get_player_guess
+    else
+      @player_guess = player_color_guess.split("")
     end
   end
 
-  def check_number_of_exact_elements
+  def invalid_guess?(player_color_guess)
+    if player_color_guess.length == @computer_sequence.length
+      return false
+    elsif player_color_guess.length > @computer_sequence.length
+      puts "Too many colors!"
+      return true
+    elsif player_color_guess.length < @computer_sequence.length
+      puts "Not enough colors!"
+      return true
+    end
+  end
+
+  def exact_elements
     exact_element_counter = 0
-    @computer_color_selection.each_with_index do |color, i|
-      if color == @player_colors_guess[i]
-        exact_element_counter += 1
-      end
+    @computer_sequence.each_with_index do |color, i|
+      exact_element_counter += 1 if color == @player_guess[i]
     end
     exact_element_counter
   end
 
-  def check_number_of_like_elements
-    unique_element_counter = 0
-    cloned_computer_color_selection = @computer_color_selection.clone
-    @player_colors_guess.each do |color|
-      if cloned_computer_color_selection.include?(color)
-        delete_color = cloned_computer_color_selection.index(color)
-        cloned_computer_color_selection.delete_at(delete_color)
-        unique_element_counter += 1
+  def like_elements
+    like_element_counter = 0
+    cloned_computer_sequence = @computer_sequence.clone
+    @player_guess.each do |color|
+      if cloned_computer_sequence.include?(color)
+        delete_color = cloned_computer_sequence.index(color)
+        cloned_computer_sequence.delete_at(delete_color)
+        like_element_counter += 1
       end
     end
-    unique_element_counter
+    like_element_counter
   end
 
   def guess_counter
-    if @player_colors_guess != @computer_color_selection
+    if did_player_win? == false
       @guess_counter += 1
     end
     @guess_counter
   end
 
   def incorrect_guess_statement
-    clear_screen
-    puts "#{@player_colors_guess.join("")} has #{check_number_of_like_elements} of the correct elements with #{check_number_of_exact_elements} in the correct positions. Number of guesses: #{@guess_counter}"
+    puts "#{@player_guess.join("")} has #{like_elements} of the correct elements with #{exact_elements} in the correct positions. Number of guesses: #{@guess_counter}."
+  end
+
+  def did_player_win?
+    @player_guess == @computer_sequence
+  end
+
+  def time_spent_playing
+    total_time_played = Time.now.to_i - @time_start
+    puts "It took you #{total_time_played / 60} minutes and #{total_time_played % 60} seconds to finish!"
   end
 
   def win_state_text
-    "You guessed correctly! It only took you... uh... #{@guess_counter} guesses."
+    puts "You guessed correctly! It only took you... uh... #{@guess_counter} guesses."
   end
 
   def play_again_text
-    "Do you want to (p)lay again or (q)uit?"
-  end
-
-  def clear_screen
-    puts `clear`
-  end
-
-  def win_state
-    if @player_colors_guess == @computer_color_selection
-      @guess_counter += 1
-      p win_state_text
-      @guess_counter = 0
-      p play_again_text
-      loop do
-        get_player_initial_input
-        break if @initial_player_input == "p"
-        exit if @initial_player_input == "q"
-      end
-      reset_computer_input
-    end
+    puts "Do you want to (p)lay again or (q)uit?"
   end
 
   def reset_computer_input
-    @computer_color_selection = []
+    @computer_sequence = []
+  end
+
+  def win_state
+    if did_player_win? == true
+    @guess_counter += 1
+    win_state_text
+    time_spent_playing
+    @guess_counter = 0
+    play_again_text
+    loop do
+      play_again_or_quit = gets.chomp.downcase
+      if play_again_or_quit == "p"
+        break
+      elsif play_again_or_quit == "q"
+        exit
+      end
+    end
+    reset_computer_input
+    puts `clear`
   end
 end
 
 mastermind = Mastermind.new
-text = Text.new
 
-p text.intro
+# puts text.intro
 mastermind.player_path_decider
 
 loop do
   mastermind.computer_random_generator
-  p mastermind.game_play_instructions
   mastermind.get_player_guess
-  mastermind.check_player_guess_for_validity
-  mastermind.check_number_of_exact_elements
-  mastermind.check_number_of_like_elements
   mastermind.guess_counter
   mastermind.incorrect_guess_statement
   mastermind.win_state
 end
 
-# create a reset guess counter method
+end
