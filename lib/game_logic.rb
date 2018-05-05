@@ -1,8 +1,8 @@
-require "pry"
-require "./lib/text"
+class GameLogic
+  # attr_accessor :computer_sequence
+  #               :player_guess
 
-class Mastermind
-  def initialize
+  def initialize #(computer_sequence = nil, player_guess = nil)
     @computer_sequence = []
     @player_guess = []
     @guess_counter = 0
@@ -23,7 +23,7 @@ class Mastermind
   end
 
   def introductory_text
-   puts "Welcome to MASTERMIND\n Would you like to (p)lay, (r)ead the instructions, or (q)uit?"
+   puts "Welcome to MASTERMIND\n Would you like to (p)lay, read the (i)nstructions, or (q)uit?"
   end
 
   def player_path_decider
@@ -31,26 +31,40 @@ class Mastermind
     initial_player_input = gets.chomp.downcase
     if initial_player_input == "p"
       return
-    elsif initial_player_input == "r"
+    elsif initial_player_input == "i" || initial_player_input == "instructions"
       instructions
       player_path_decider
-    elsif initial_player_input == "q"
+    elsif initial_player_input == "q" || initial_player_input == "quit"
       exit
     end
   end
 
   def instructions
-    puts "The computer will generate a random sequence of (r)ed, (g)reen, (b)lue, and (y)ellow. You will make guesses in the format: rygb. You can quit at any time by pressing (q) or typing quit!"
+    puts "The computer will generate a random sequence of 4 color: (r)ed, (g)reen, (b)lue, and (y)ellow. You will make guesses in the format: rygb. You can quit at any time by pressing (q) or typing quit!"
   end
 
   def game_play_instructions
     puts "I have generated a beginner sequence with four elements made up of: (r)ed, (g)reen, (b)lue, and (y)ellow. Use (q)uit at any time to end the game."
   end
 
+  def try_again_text
+    puts "Try again!"
+  end
+
+  def just_give_up
+    puts "Maybe this game isn't for you."
+  end
+
   def get_player_guess
-    game_play_instructions
+    if @guess_counter == 0
+      game_play_instructions
+    elsif @guess_counter > 10
+      just_give_up
+    elsif @guess_counter >= 1
+      try_again_text
+    end
     player_color_guess = gets.downcase.chomp
-    if player_color_guess == "q"
+    if player_color_guess == "q" || player_color_guess == "quit"
       exit
     elsif player_color_guess == "c"
       puts @computer_sequence.join
@@ -103,7 +117,9 @@ class Mastermind
   end
 
   def incorrect_guess_statement
-    puts "#{@player_guess.join("")} has #{like_elements} of the correct elements with #{exact_elements} in the correct positions. Number of guesses: #{@guess_counter}."
+    if did_player_win? == false
+      puts "#{@player_guess.join("")} has #{like_elements} of the correct elements with #{exact_elements} in the correct positions. Number of guesses: #{@guess_counter}."
+    end
   end
 
   def did_player_win?
@@ -138,7 +154,7 @@ class Mastermind
       play_again_or_quit = gets.chomp.downcase
       if play_again_or_quit == "p"
         break
-      elsif play_again_or_quit == "q"
+      elsif play_again_or_quit == "q" || play_again_or_quit == "q"
         exit
       end
     end
@@ -146,18 +162,4 @@ class Mastermind
     puts `clear`
   end
 end
-
-mastermind = Mastermind.new
-
-# puts text.intro
-mastermind.player_path_decider
-
-loop do
-  mastermind.computer_random_generator
-  mastermind.get_player_guess
-  mastermind.guess_counter
-  mastermind.incorrect_guess_statement
-  mastermind.win_state
-end
-
 end
