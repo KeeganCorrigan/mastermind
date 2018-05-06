@@ -1,7 +1,6 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/game_logic'
-require 'pry'
 
 class GameLogicTest < Minitest::Test
   def test_game_logic_exists
