@@ -1,6 +1,7 @@
 class GameLogic
   attr_accessor :computer_sequence,
-  :player_guess
+                :player_guess
+                :guess_counter
 
   def initialize
     @computer_sequence = []
@@ -23,16 +24,16 @@ class GameLogic
   end
 
   def introductory_text
-   puts "Welcome to MASTERMIND\n Would you like to (p)lay, read the (i)nstructions, or (q)uit?"
+   "Welcome to MASTERMIND\n Would you like to (p)lay, read the (i)nstructions, or (q)uit?"
   end
 
   def player_path_decider
-    introductory_text
+    puts introductory_text
     initial_player_input = gets.chomp.downcase
     if initial_player_input == "p"
       return
     elsif initial_player_input == "i" || initial_player_input == "instructions"
-      instructions
+      puts instructions
       player_path_decider
     elsif initial_player_input == "q" || initial_player_input == "quit"
       exit
@@ -40,28 +41,28 @@ class GameLogic
   end
 
   def instructions
-    puts "The computer will generate a random sequence of 4 color: (r)ed, (g)reen, (b)lue, and (y)ellow. You will make guesses in the format: rygb. You can quit at any time by pressing (q) or typing quit!"
+    "The computer will generate a random sequence of 4 color: (r)ed, (g)reen, (b)lue, and (y)ellow. You will make guesses in the format: rygb. You can quit at any time by pressing (q) or typing quit!"
   end
 
   def game_play_instructions
-    puts "I have generated a beginner sequence with four elements made up of: (r)ed, (g)reen, (b)lue, and (y)ellow. Use (q)uit at any time to end the game."
+    "I have generated a beginner sequence with four elements made up of: (r)ed, (g)reen, (b)lue, and (y)ellow. Use (q)uit at any time to end the game."
   end
 
   def try_again_text
-    puts "Try again!"
+    "Try again!"
   end
 
   def just_give_up
-    puts "Maybe this game isn't for you."
+    "Maybe this game isn't for you."
   end
 
   def get_player_guess
     if @guess_counter == 0
-      game_play_instructions
+      puts game_play_instructions
     elsif @guess_counter > 10
-      just_give_up
+      puts just_give_up
     elsif @guess_counter >= 1
-      try_again_text
+      puts try_again_text
     end
     player_color_guess = gets.downcase.chomp
     if player_color_guess == "q" || player_color_guess == "quit"
