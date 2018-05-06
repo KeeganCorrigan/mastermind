@@ -1,8 +1,9 @@
 class GameLogic
   attr_accessor :computer_sequence,
-                :player_guess
+                :player_guess,
                 :guess_counter
-                :time_start
+
+  attr_reader   :time_start
 
   def initialize
     @computer_sequence = []
@@ -31,7 +32,7 @@ class GameLogic
   def player_path_decider
     puts introductory_text
     initial_player_input = gets.chomp.downcase
-    if initial_player_input == "p"
+    if initial_player_input == "p" || initial_player_input == "play"
       return
     elsif initial_player_input == "i" || initial_player_input == "instructions"
       puts instructions
@@ -44,7 +45,7 @@ class GameLogic
   end
 
   def instructions
-    "The computer will generate a random sequence of 4 colors: (r)ed, (g)reen, (b)lue, and (y)ellow. There can be duplicates!\n You will make guesses in the format: rygb.\n You can quit at any time by pressing (q) or typing quit!"
+    "The computer will generate a random sequence of 4 colors: (r)ed, (g)reen, (b)lue, and (y)ellow. There can be duplicates!\n You will make guesses in the format: rygb.\n You can quit at any time by pressing (q) or typing quit! During gameplay, you can cheat too... by typing (c) or cheat. :("
   end
 
   def game_play_instructions
@@ -70,7 +71,7 @@ class GameLogic
     player_color_guess = gets.downcase.chomp
     if player_color_guess == "q" || player_color_guess == "quit"
       exit
-    elsif player_color_guess == "c"
+    elsif player_color_guess == "c" || player_color_guess == "cheat"
       puts @computer_sequence.join
       get_player_guess
     elsif invalid_guess?(player_color_guess)
@@ -156,7 +157,7 @@ class GameLogic
     puts play_again_text
     loop do
       play_again_or_quit = gets.chomp.downcase
-      if play_again_or_quit == "p"
+      if play_again_or_quit == "p" || play_again_or_quit == "play"
         break
       elsif play_again_or_quit == "q" || play_again_or_quit == "q"
         exit

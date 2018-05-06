@@ -18,10 +18,6 @@ class GameLogicTest < Minitest::Test
     refute_equal (array_length + 1), mastermind.computer_sequence.length
   end
 
-  def test_player_path_decider
-    skip
-  end
-
   def test_introductory_text
     mastermind = GameLogic.new
     assert_equal String, mastermind.introductory_text.class
