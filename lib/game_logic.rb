@@ -1,8 +1,8 @@
 class GameLogic
-  # attr_accessor :computer_sequence
-  #               :player_guess
+  attr_accessor :computer_sequence,
+  :player_guess
 
-  def initialize #(computer_sequence = nil, player_guess = nil)
+  def initialize
     @computer_sequence = []
     @player_guess = []
     @guess_counter = 0
