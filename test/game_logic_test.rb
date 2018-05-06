@@ -55,17 +55,6 @@ class GameLogicTest < Minitest::Test
     assert_equal false, mastermind.invalid_guess?("rgbb")
   end
 
-  def test_did_player_win?
-    mastermind = GameLogic.new
-    mastermind.computer_sequence = ["r", "g", "b", "y"]
-    mastermind.player_guess = ["r", "y", "b", "y"]
-    assert_equal false, mastermind.did_player_win?
-    mastermind.computer_sequence = ["r", "g", "b", "y"]
-    mastermind.player_guess = ["r", "y", "b", "y"]
-    assert true, mastermind.did_player_win?
-  end
-
-
   def test_exact_elements
     mastermind = GameLogic.new
     mastermind.computer_sequence = ["r", "g", "b", "y"]
@@ -74,16 +63,6 @@ class GameLogicTest < Minitest::Test
     mastermind.computer_sequence = ["r", "r", "b", "y"]
     mastermind.player_guess = ["g", "g", "g", "y"]
     assert_equal 1, mastermind.exact_elements
-  end
-
-  def test_like_elements
-    mastermind = GameLogic.new
-    mastermind.computer_sequence = ["r", "b", "b", "y"]
-    mastermind.player_guess = ["r", "g", "g", "y"]
-    assert_equal 2, mastermind.like_elements
-    mastermind.computer_sequence = ["r", "r", "r", "r"]
-    mastermind.player_guess = ["r", "g", "g", "y"]
-    assert_equal 1, mastermind.like_elements
   end
 
   def test_guess_counter
@@ -99,6 +78,50 @@ class GameLogicTest < Minitest::Test
     mastermind.player_guess = ["r", "g", "g", "y"]
     mastermind.did_player_win?
     assert_equal 2, mastermind.guess_counter
+  end
+
+  def test_incorrect_guess_statement
+    mastermind = GameLogic.new
+    mastermind.computer_sequence = ["r", "b", "b", "y"]
+    mastermind.player_guess = ["r", "g", "g", "y"]
+    mastermind.did_player_win?
+    mastermind.guess_counter
+    assert_equal "rggy has 2 of the correct elements with 2 in the correct positions. Number of guesses: 1.", mastermind.incorrect_guess_statement
+    mastermind.computer_sequence = ["b", "b", "b", "b"]
+    mastermind.player_guess = ["r", "g", "g", "y"]
+    mastermind.did_player_win?
+    mastermind.guess_counter
+    assert_equal "rggy has 0 of the correct elements with 0 in the correct positions. Number of guesses: 2.", mastermind.incorrect_guess_statement
+  end
+
+  def test_did_player_win?
+    mastermind = GameLogic.new
+    mastermind.computer_sequence = ["r", "g", "b", "y"]
+    mastermind.player_guess = ["r", "y", "b", "y"]
+    assert_equal false, mastermind.did_player_win?
+    mastermind.computer_sequence = ["r", "g", "b", "y"]
+    mastermind.player_guess = ["r", "y", "b", "y"]
+    assert true, mastermind.did_player_win?
+  end
+
+  def test_time_spent_playing
+    mastermind = GameLogic.new
+    mastermind.start_time
+    sleep(1)
+    assert_equal "It took you 0 minutes and 1 seconds to finish!", mastermind.time_spent_playing
+  end
+
+  def test_win_state_text
+    mastermind = GameLogic.new
+    mastermind.computer_sequence = ["r", "g", "b", "y"]
+    mastermind.player_guess = ["r", "y", "b", "y"]
+    mastermind.guess_counter
+    assert_equal "You guessed correctly! It only took you... uh... 1 guesses.", mastermind.win_state_text
+  end
+
+  def test_play_again_text
+    mastermind = GameLogic.new
+    assert_equal String, mastermind.play_again_text.class
   end
 
   def test_reset_computer_input

@@ -2,6 +2,7 @@ class GameLogic
   attr_accessor :computer_sequence,
                 :player_guess
                 :guess_counter
+                :time_start
 
   def initialize
     @computer_sequence = []
@@ -37,11 +38,13 @@ class GameLogic
       player_path_decider
     elsif initial_player_input == "q" || initial_player_input == "quit"
       exit
+    else
+      player_path_decider
     end
   end
 
   def instructions
-    "The computer will generate a random sequence of 4 color: (r)ed, (g)reen, (b)lue, and (y)ellow. You will make guesses in the format: rygb. You can quit at any time by pressing (q) or typing quit!"
+    "The computer will generate a random sequence of 4 colors: (r)ed, (g)reen, (b)lue, and (y)ellow. There can be duplicates!\n You will make guesses in the format: rygb.\n You can quit at any time by pressing (q) or typing quit!"
   end
 
   def game_play_instructions
@@ -119,7 +122,7 @@ class GameLogic
 
   def incorrect_guess_statement
     if did_player_win? == false
-      puts "#{@player_guess.join("")} has #{like_elements} of the correct elements with #{exact_elements} in the correct positions. Number of guesses: #{@guess_counter}."
+      "#{@player_guess.join("")} has #{like_elements} of the correct elements with #{exact_elements} in the correct positions. Number of guesses: #{@guess_counter}."
     end
   end
 
@@ -129,15 +132,15 @@ class GameLogic
 
   def time_spent_playing
     total_time_played = Time.now.to_i - @time_start
-    puts "It took you #{total_time_played / 60} minutes and #{total_time_played % 60} seconds to finish!"
+    "It took you #{total_time_played / 60} minutes and #{total_time_played % 60} seconds to finish!"
   end
 
   def win_state_text
-    puts "You guessed correctly! It only took you... uh... #{@guess_counter} guesses."
+    "You guessed correctly! It only took you... uh... #{@guess_counter} guesses."
   end
 
   def play_again_text
-    puts "Do you want to (p)lay again or (q)uit?"
+    "Do you want to (p)lay again or (q)uit?"
   end
 
   def reset_computer_input
@@ -147,10 +150,10 @@ class GameLogic
   def win_state
     if did_player_win? == true
     @guess_counter += 1
-    win_state_text
-    time_spent_playing
+    puts win_state_text
+    puts time_spent_playing
     @guess_counter = 0
-    play_again_text
+    puts play_again_text
     loop do
       play_again_or_quit = gets.chomp.downcase
       if play_again_or_quit == "p"

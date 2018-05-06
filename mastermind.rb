@@ -1,4 +1,4 @@
-require "./game_logic"
+require "./lib/game_logic"
 
 mastermind = GameLogic.new
 
@@ -8,6 +8,6 @@ loop do
   mastermind.computer_random_generator
   mastermind.get_player_guess
   mastermind.guess_counter
-  mastermind.incorrect_guess_statement
+  puts mastermind.incorrect_guess_statement
   mastermind.win_state
 end
